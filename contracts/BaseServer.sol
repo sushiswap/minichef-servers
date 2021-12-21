@@ -38,7 +38,8 @@ abstract contract BaseServer is Ownable {
     emit Withdraw(pid, 1);
   }
 
-  function deposit() public onlyOwner {
+  function deposit(address token) public onlyOwner {
+    IERC20(token).approve(address(masterchefV1), type(uint256).max);
     masterchefV1.deposit(pid, 1);
     emit Deposit(pid, 1);
   }
