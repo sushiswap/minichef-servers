@@ -4,13 +4,13 @@ pragma solidity ^0.8.0;
 import '@openzeppelin/contracts/access/Ownable.sol';
 import '@openzeppelin/contracts/token/ERC20/IERC20.sol';
 
-interface IMasterChefV2 {
-    function withdraw(uint256 pid, uint256 amount, address to) external;
-    function harvest(uint256 pid, address to) external;
+interface IMasterChefV1 {
+    function withdraw(uint256 _pid, uint256 _amount) external;
+    function deposit(uint256 _pid, uint256 _amount) external;
 }
 
 abstract contract BaseServer is Ownable {
-  IMasterChefV2 public constant masterchefv2 = IMasterChefV2(0xEF0881eC094552b2e128Cf945EF17a6752B4Ec5d);
+  IMasterChefV1 public constant masterchefV1 = IMasterChefV1(0xc2EdaD668740f1aA35E4D8f227fB8E17dcA888Cd);
   IERC20 public constant sushi = IERC20(0x6B3595068778DD592e39A122f4f5a5cF09C90fE2);
 
   uint256 public immutable pid;
@@ -22,13 +22,18 @@ abstract contract BaseServer is Ownable {
     minichef = _minichef;
   }
 
-  function harvest() public {
-    masterchefv2.harvest(pid, address(this));
+  function harvestAndBridge() public {
+    masterchefV1.withdraw(pid, 1);
+    masterchefV1.deposit(pid, 1);
     bridge();
   }
 
   function withdraw() public onlyOwner {
-    masterchefv2.withdraw(pid, 1, msg.sender);
+    masterchefV1.withdraw(pid, 1);
+  }
+
+  function deposit() public onlyOwner {
+    masterchefV1.deposit(pid, 1);
   }
 
   function bridge() public virtual;
