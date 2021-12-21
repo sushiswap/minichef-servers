@@ -3,8 +3,6 @@ pragma solidity ^0.8.0;
 
 import '../BaseServer.sol';
 
-import 'hardhat/console.sol';
-
 interface IPolygonBridge {
   function depositFor(address user, address token, bytes calldata depositData) external;
 }
