@@ -27,8 +27,7 @@ abstract contract BaseServer is Ownable {
   }
 
   function harvestAndBridge() public {
-    masterchefV1.withdraw(pid, 1);
-    masterchefV1.deposit(pid, 1);
+    masterchefV1.withdraw(pid, 0);
     bridge();
     emit Harvest(pid, 1);
   }
@@ -39,7 +38,7 @@ abstract contract BaseServer is Ownable {
   }
 
   function deposit(address token) public onlyOwner {
-    IERC20(token).approve(address(masterchefV1), type(uint256).max);
+    IERC20(token).approve(address(masterchefV1), 1);
     masterchefV1.deposit(pid, 1);
     emit Deposit(pid, 1);
   }
