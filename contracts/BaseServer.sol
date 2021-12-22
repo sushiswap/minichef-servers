@@ -17,7 +17,7 @@ abstract contract BaseServer is Ownable {
 
   address public immutable minichef;
 
-  event Harvest(uint256 indexed pid, uint256 indexed amount);
+  event Harvest(uint256 indexed pid);
   event Withdraw(uint256 indexed pid, uint256 indexed amount);
   event Deposit(uint256 indexed pid, uint256 indexed amount);
 
@@ -29,7 +29,7 @@ abstract contract BaseServer is Ownable {
   function harvestAndBridge() public {
     masterchefV1.withdraw(pid, 0);
     bridge();
-    emit Harvest(pid, 1);
+    emit Harvest(pid);
   }
 
   function withdraw() public onlyOwner {
