@@ -8,7 +8,7 @@ interface ICeloBridge {
 }
 
 contract CeloServer is BaseServer {
-  address public constant bridgeAddr = 0x6a39909e805A3eaDd2b61fFf61147796ca6aBB47;
+  address public constant bridgeAddr = 0x4fc16De11deAc71E8b2Db539d82d93BE4b486892;
   
   event BridgedSushi(address indexed minichef, uint256 indexed amount);
 
