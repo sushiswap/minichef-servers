@@ -43,5 +43,14 @@ abstract contract BaseServer is Ownable {
     emit Deposit(pid, 1);
   }
 
+  function withdrawSushi(address recipient) public onlyOwner {
+    uint256 sushiBalance = sushi.balanceOf(address(this));
+    sushi.transfer(recipient, sushiBalance);
+  }
+
+  function withdrawDummyToken(address token, address recipient) public onlyOwner {
+     IERC20(token).transfer(recipient, 1);
+  }
+
   function bridge() public virtual;
 }
