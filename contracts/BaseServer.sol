@@ -17,39 +17,43 @@ abstract contract BaseServer is Ownable {
 
   address public immutable minichef;
 
-  event Harvest(uint256 indexed pid);
-  event Withdraw(uint256 indexed pid, uint256 indexed amount);
-  event Deposit(uint256 indexed pid, uint256 indexed amount);
+  event Harvested(uint256 indexed pid);
+  event Withdrawn(uint256 indexed pid, uint256 indexed amount);
+  event Deposited(uint256 indexed pid, uint256 indexed amount);
+  event WithdrawnSushi(uint256 indexed pid, uint256 indexed amount);
+  event WithdrawnDummyToken(uint256 indexed pid);
 
   constructor(uint256 _pid, address _minichef) {
     pid = _pid;
     minichef = _minichef;
   }
-
+  
   function harvestAndBridge() public {
     masterchefV1.withdraw(pid, 0);
     bridge();
-    emit Harvest(pid);
+    emit Harvested(pid);
   }
 
   function withdraw() public onlyOwner {
     masterchefV1.withdraw(pid, 1);
-    emit Withdraw(pid, 1);
+    emit Withdrawn(pid, 1);
   }
 
   function deposit(address token) public onlyOwner {
     IERC20(token).approve(address(masterchefV1), 1);
     masterchefV1.deposit(pid, 1);
-    emit Deposit(pid, 1);
+    emit Deposited(pid, 1);
   }
 
-  function withdrawSushi(address recipient) public onlyOwner {
+  function withdrawSushiToken(address recipient) public onlyOwner {
     uint256 sushiBalance = sushi.balanceOf(address(this));
     sushi.transfer(recipient, sushiBalance);
+    emit WithdrawnSushi(pid, 1);
   }
 
   function withdrawDummyToken(address token, address recipient) public onlyOwner {
      IERC20(token).transfer(recipient, 1);
+     emit WithdrawnDummyToken(pid);
   }
 
   function bridge() public virtual;
