@@ -15,7 +15,7 @@ contract PolygonServer is BaseServer {
 
   constructor(uint256 _pid, address _minichef) BaseServer(_pid, _minichef) {}
 
-  function bridge() public override {
+  function _bridge() internal override {
     uint256 sushiBalance = sushi.balanceOf(address(this));
 
     sushi.approve(address(polygonErcBridge), sushiBalance);

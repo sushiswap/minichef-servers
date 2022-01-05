@@ -17,7 +17,7 @@ contract AnyswapServer is BaseServer {
     chainId = _chainId;
   }
 
-  function bridge() public override {
+  function _bridge() internal override {
     uint256 sushiBalance = sushi.balanceOf(address(this));
 
     sushi.approve(bridgeAddr, sushiBalance);

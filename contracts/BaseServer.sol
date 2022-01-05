@@ -9,6 +9,10 @@ interface IMasterChefV1 {
     function deposit(uint256 _pid, uint256 _amount) external;
 }
 
+interface IBridgeAdapter {
+  function bridge() external;
+}
+
 abstract contract BaseServer is Ownable {
   IMasterChefV1 public constant masterchefV1 = IMasterChefV1(0xc2EdaD668740f1aA35E4D8f227fB8E17dcA888Cd);
   IERC20 public constant sushi = IERC20(0x6B3595068778DD592e39A122f4f5a5cF09C90fE2);
@@ -17,15 +21,19 @@ abstract contract BaseServer is Ownable {
 
   address public immutable minichef;
 
+  address public bridgeAdapter;
+
   event Harvested(uint256 indexed pid);
   event Withdrawn(uint256 indexed pid, uint256 indexed amount);
   event Deposited(uint256 indexed pid, uint256 indexed amount);
   event WithdrawnSushi(uint256 indexed pid, uint256 indexed amount);
   event WithdrawnDummyToken(uint256 indexed pid);
+  event BridgeUpdated(address indexed newBridgeAdapter);
 
   constructor(uint256 _pid, address _minichef) {
     pid = _pid;
     minichef = _minichef;
+    bridgeAdapter = address(this);
   }
   
   function harvestAndBridge() public {
@@ -56,5 +64,22 @@ abstract contract BaseServer is Ownable {
      emit WithdrawnDummyToken(pid);
   }
 
-  function bridge() public virtual;
+  function updateBridgeAdapter(address newBridgeAdapter) public onlyOwner {
+    require(newBridgeAdapter != address(0), "zero address");
+    bridgeAdapter = newBridgeAdapter;
+    emit BridgeUpdated(newBridgeAdapter);
+  }
+
+  function bridge() public {
+    if(bridgeAdapter == address(this)) {
+      _bridge();
+    } else {
+      uint256 sushiBalance = sushi.balanceOf(address(this));
+      sushi.transfer(bridgeAdapter, sushiBalance);
+      IBridgeAdapter(bridgeAdapter).bridge();
+    }
+  }
+
+  function _bridge() internal virtual;
+
 }
