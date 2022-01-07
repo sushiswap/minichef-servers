@@ -22,12 +22,20 @@ xDai - 346
 
 Celo - 347
 
+Moonriver - 348
+
+Arbitrum - 349
+
 # Servers
 
-Polygon - 0x9aac9048fC8139667D6a2597B902865bfdc225d3
+Polygon - 0x3d0B3b816DC1e0825808F27510eF7Aa5E3136D75
 
-Harmony - 0x9B74a5E55Dbb3de8470270398F8cEB61459dE9ee
+Harmony - 
 
-xDai - 0x16E699e0EC08302faB1e0E7DC98eec859cFdb100
+xDai - 
 
-Celo - 0x8A51900A0d4c07EED053ae00514D52fBf5784f80
+Celo - 
+
+Moonriver -
+
+Arbitrum - 
