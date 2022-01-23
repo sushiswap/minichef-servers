@@ -7,13 +7,13 @@ module.exports = async function ({
   const { deploy } = deployments;
   const { dev } = await getNamedAccounts();
 
-  const { address } = await deploy("xDaiDummyToken", {
+  const { address } = await deploy("FantomDummyToken", {
     contract: "DummyToken",
     from: dev,
-    args: ["xDai Dummy Token", "XDAIDUMMYTOKEN"],
+    args: ["Fantom Dummy Token", "FANTOMDUMMYTOKEN"],
   });
 
-  console.log(`Deployed xDai Dummy Token at ${address}`);
+  console.log(`Fantom xDai Dummy Token at ${address}`);
 };
 
-module.exports.tags = ["xDaiDummyToken"];
+module.exports.tags = ["FantomDummyToken"];

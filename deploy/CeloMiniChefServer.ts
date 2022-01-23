@@ -1,7 +1,7 @@
 import { ChainId, MINICHEF_ADDRESS } from "@sushiswap/sdk";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
 
-const PID = 347;
+const PID = 345;
 
 module.exports = async function ({
   deployments,
