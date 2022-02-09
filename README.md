@@ -22,9 +22,9 @@ Celo - 345
 
 xDai - 346
 
-Harmony - 
+Harmony - 348
 
-Moonriver -
+Moonriver - 
 
 Arbitrum - 
 
@@ -38,7 +38,7 @@ Celo - 0x6eB21D6d8E272Aa07B49D12ABc51B839e1dE0216
 
 xDai - 0xBbD10280DD13de418f666648D2488e4059F56d81
 
-Harmony - 
+Harmony - 0x0B301340B9c95C19B4407e30A315a39dA43B3a56
 
 Moonriver -
 
