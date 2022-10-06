@@ -23,23 +23,30 @@ interface KeeperCompatibleInterface {
 contract ServersKeeper is Ownable, KeeperCompatibleInterface {
     IMasterChef internal immutable masterchef;
 
-    uint256 public minSushiAmount;
+    uint256 public minTimePeriod;
 
     address[] internal servers;
+    mapping(address => uint256) public lastHarvestAndBridge;
 
-    constructor(address _masterchef, uint256 _minSushiAmount) {
+    constructor(address _masterchef, uint256 _minTimePeriod) {
         masterchef = IMasterChef(_masterchef);
-        minSushiAmount = _minSushiAmount;
+        minTimePeriod = _minTimePeriod;
     }
 
     ///@notice Set the array of servers to be checked by the keeper
     function setServers(address[] calldata _servers) external onlyOwner {
+        for (uint256 i = 0; i < _servers.length; ) {
+            lastHarvestAndBridge[_servers[i]] = block.timestamp;
+
+            unchecked {
+                i += 1;
+            }
+        }
         servers = _servers;
     }
 
-    ///@notice Set the minimum sushi amount available to be harvested to execute a harvestAndBridge
-    function setMinSushiAmount(uint256 newMinAmount) external onlyOwner {
-        minSushiAmount = newMinAmount;
+    function setMinTimePeriod(uint256 newMinTimePeriod) external onlyOwner {
+        minTimePeriod = newMinTimePeriod;
     }
 
     ///@notice View function checked by the keeper on every block
@@ -50,25 +57,26 @@ contract ServersKeeper is Ownable, KeeperCompatibleInterface {
     {
         uint256 length = servers.length;
         for (uint256 i = 0; i < length; i++) {
-            BaseServer server = BaseServer(servers[i]);
+            address server = servers[i];
             if (
-                masterchef.pendingSushi(server.pid(), servers[i]) >
-                minSushiAmount
+                lastHarvestAndBridge[server] + minTimePeriod <
+                block.timestamp &&
+                masterchef.pendingSushi(BaseServer(server).pid(), server) > 0
             ) {
-                return (true, abi.encode(i));
+                return (true, abi.encode(server));
             }
         }
     }
 
     ///@notice Function executed by the keeper if checkUpKeep returns true
     function performUpkeep(bytes calldata performData) external {
-        uint256 serverId = abi.decode(performData, (uint256));
-        BaseServer server = BaseServer(servers[serverId]);
+        address server = abi.decode(performData, (address));
         if (
-            masterchef.pendingSushi(server.pid(), servers[serverId]) >
-            minSushiAmount
+            lastHarvestAndBridge[server] + minTimePeriod < block.timestamp &&
+            masterchef.pendingSushi(BaseServer(server).pid(), server) > 0
         ) {
-            server.harvestAndBridge();
+            BaseServer(server).harvestAndBridge();
+            lastHarvestAndBridge[server] = block.timestamp;
         }
     }
 
