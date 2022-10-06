@@ -38,7 +38,7 @@ contract ServersKeeper is Ownable, KeeperCompatibleInterface {
     }
 
     ///@notice Set the minimum sushi amount available to be harvested to execute a harvestAndBridge
-    function serMinSushiAmount(uint256 newMinAmount) external onlyOwner {
+    function setMinSushiAmount(uint256 newMinAmount) external onlyOwner {
         minSushiAmount = newMinAmount;
     }
 
