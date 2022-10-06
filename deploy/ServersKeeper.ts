@@ -9,7 +9,7 @@ module.exports = async function ({
   const { address } = await deploy("ServersKeeper", {
     contract: "ServersKeeper",
     from: dev,
-    args: ["0xc2EdaD668740f1aA35E4D8f227fB8E17dcA888Cd", "1000000000000000000000"],
+    args: ["0xc2EdaD668740f1aA35E4D8f227fB8E17dcA888Cd", "604800"],
   });
   console.log(`Deployed Servers Keeper at ${address}`);
 };
