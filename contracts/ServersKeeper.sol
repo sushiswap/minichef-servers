@@ -21,10 +21,13 @@ interface KeeperCompatibleInterface {
 }
 
 contract ServersKeeper is Ownable, KeeperCompatibleInterface {
+    ///@notice masterchef contract address
     IMasterChef public immutable masterchef;
 
+    ///@notice Minimum sushi amount available to be harvested to execute a harvestAndBridge
     uint256 public minSushiAmount;
 
+    ///@notice Array of server addresses
     address[] public servers;
 
     constructor(address _masterchef, uint256 _minSushiAmount) {
@@ -32,10 +35,19 @@ contract ServersKeeper is Ownable, KeeperCompatibleInterface {
         minSushiAmount = _minSushiAmount;
     }
 
+    ///@notice Set the array of servers to be checked by the keeper
+    ///@param _servers Array of server addresses
     function setServers(address[] calldata _servers) external onlyOwner {
         servers = _servers;
     }
 
+    ///@notice Set the minimum sushi amount available to be harvested to execute a harvestAndBridge
+    ///@param newMinAmount New minimum sushi amount
+    function serMinSushiAmount(uint256 newMinAmount) external onlyOwner {
+        minSushiAmount = newMinAmount;
+    }
+
+    ///@notice View function checked by the keeper on every block
     function checkUpkeep(bytes calldata checkData)
         external
         view
@@ -53,9 +65,15 @@ contract ServersKeeper is Ownable, KeeperCompatibleInterface {
         }
     }
 
+    ///@notice Function executed by the keeper if checkUpKeep returns true
     function performUpkeep(bytes calldata performData) external {
         uint256 serverId = abi.decode(performData, (uint256));
         BaseServer server = BaseServer(servers[serverId]);
-        server.harvestAndBridge();
+        if (
+            masterchef.pendingSushi(server.pid(), servers[serverId]) >
+            minSushiAmount
+        ) {
+            server.harvestAndBridge();
+        }
     }
 }
