@@ -21,14 +21,11 @@ interface KeeperCompatibleInterface {
 }
 
 contract ServersKeeper is Ownable, KeeperCompatibleInterface {
-    ///@notice masterchef contract address
-    IMasterChef public immutable masterchef;
+    IMasterChef internal immutable masterchef;
 
-    ///@notice Minimum sushi amount available to be harvested to execute a harvestAndBridge
     uint256 public minSushiAmount;
 
-    ///@notice Array of server addresses
-    address[] public servers;
+    address[] internal servers;
 
     constructor(address _masterchef, uint256 _minSushiAmount) {
         masterchef = IMasterChef(_masterchef);
@@ -36,13 +33,11 @@ contract ServersKeeper is Ownable, KeeperCompatibleInterface {
     }
 
     ///@notice Set the array of servers to be checked by the keeper
-    ///@param _servers Array of server addresses
     function setServers(address[] calldata _servers) external onlyOwner {
         servers = _servers;
     }
 
     ///@notice Set the minimum sushi amount available to be harvested to execute a harvestAndBridge
-    ///@param newMinAmount New minimum sushi amount
     function serMinSushiAmount(uint256 newMinAmount) external onlyOwner {
         minSushiAmount = newMinAmount;
     }
@@ -75,5 +70,10 @@ contract ServersKeeper is Ownable, KeeperCompatibleInterface {
         ) {
             server.harvestAndBridge();
         }
+    }
+
+    ///@notice Servers array getter
+    function getServers() external view returns (address[] memory) {
+        return servers;
     }
 }
