@@ -45,3 +45,9 @@ Moonriver -
 Arbitrum - 
 
 Fantom -
+
+# Servers Keeper
+
+Contract - 0xd20Ae5aA1FD1e0195cBbD0bD0BD6c8Ef811a0a59
+
+Keeper - https://automation.chain.link/mainnet/32537410991697126475565022050621619877744659019451712614456496858924684367664
